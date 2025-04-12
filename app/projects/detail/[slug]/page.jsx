@@ -170,9 +170,9 @@ const ProductDetail = ({ params }) => {
   }
 
   // Tạo danh sách ảnh cho gallery
-  const galleryImages = product.images?.map((img) => img.image_path) || [
-    product.image,
-  ];
+  const galleryImages = product.images?.length
+  ? [product.image, ...product.images.map((img) => img.image_path)]
+  : [product.image];
 
   const breadcrumbsItems = [
     { label: "Trang chủ", href: "/" },
