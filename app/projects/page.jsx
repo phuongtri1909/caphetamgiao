@@ -1,106 +1,101 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import ProjectCard from "@/components/ProjectCard";
-
-const projectData = [
-  {
-    image: "/work/3.png",
-    category: "Robusta",
-    name: "Robusta Đặc Sản Tâm Giao - Ô Liu",
-    description:
-      "Hương vị đậm đà, rang ô liu độc đáo, dành cho người yêu cà phê nguyên bản.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/4.png",
-    category: "Moka - Robusta - Culi",
-    name: "Coffee For Tourists - Mộc",
-    description:
-      "Sự kết hợp tinh tế giữa Moka, Robusta và Culi, mang đến trải nghiệm khó quên.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/2.png",
-    category: "Arabica",
-    name: "Arabica Truyền Thống - Ô Liu",
-    description:
-      "Cà phê Arabica với hậu vị thanh thoát, thích hợp cho người yêu cà phê nhẹ nhàng.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/1.png",
-    category: "Robusta - Culi - Arabica",
-    name: "Tinh Hoa Đại Ngàn - Mộc",
-    description:
-      "Một sự hòa quyện hoàn hảo giữa Robusta mạnh mẽ, Culi béo ngậy và Arabica thanh lịch.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/3.png",
-    category: "Robusta 80% - Arabica 20%",
-    name: "Cà Phê Quốc Dân - Ô Liu",
-    description:
-      "Sự cân bằng giữa Robusta đậm đà và Arabica dịu nhẹ, phù hợp với mọi gu thưởng thức.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/4.png",
-    category: "Hòa Tan",
-    name: "Cà Phê Hòa Tan Sấy Lạnh",
-    description:
-      "Cà phê hòa tan tiện lợi, giữ trọn hương vị nguyên bản nhờ công nghệ sấy lạnh hiện đại.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/1.png",
-    category: "Robusta",
-    name: "Robusta Truyền Thống - Mộc",
-    description:
-      "Hương vị truyền thống với độ đậm đà đặc trưng, dành cho những ai yêu thích vị mạnh của Robusta.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/3.png",
-    category: "Arabica",
-    name: "Arabica Truyền Thống - Mộc",
-    description:
-      "Cà phê Arabica nguyên bản với hương vị nhẹ nhàng, hậu vị thanh ngọt.",
-    link: "/",
-    github: "/",
-  },
-  {
-    image: "/work/2.png",
-    category: "Robusta - Culi - Arabica",
-    name: "Tinh Hoa Đại Ngàn - Ô Liu",
-    description:
-      "Một sự hòa quyện tinh tế của ba loại cà phê, mang đến hương vị phong phú và đậm đà.",
-    link: "/",
-    github: "/",
-  },
-];
-
-// Lọc danh mục duy nhất ngay khi lấy dữ liệu
-const uniqueCategories = [
-  "all projects",
-  ...Array.from(new Set(projectData.map((item) => item.category.trim()))),
-];
+import { useCategories } from "@/hooks/useAPI";
+import { getProducts } from "@/services/productService";
+import { getCategories } from "@/services/categoryService";
+import { truncateHTML } from "@/lib/utils";
 
 const Projects = () => {
-  const [category, setCategory] = useState("all projects");
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoryMapping, setCategoryMapping] = useState({});
+  const [currentCategory, setCurrentCategory] = useState("all products");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Lọc project theo category đã chọn
-  const filteredProjects =
-    category === "all projects"
-      ? projectData
-      : projectData.filter((project) => project.category.trim() === category);
+  // Fetch categories and products when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch categories from API
+        const categoriesData = await getCategories();
+        
+        // Create mapping between name and slug
+        const mapping = {};
+        mapping["all products"] = "all products";
+        
+        categoriesData.forEach(cat => {
+          mapping[cat.name] = cat.slug;
+        });
+        
+        setCategoryMapping(mapping);
+        
+        // Set categories with display names (including "all products")
+        setCategories(["all products", ...categoriesData.map(cat => cat.name)]);
+        
+        // Fetch all products initially
+        const productsData = await getProducts();
+        setProducts(productsData || []);
+        
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading data:", err);
+        setError("Không thể tải dữ liệu sản phẩm. Vui lòng thử lại sau.");
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  // Fetch filtered products when category changes
+  useEffect(() => {
+    const fetchFilteredProducts = async () => {
+      try {
+        setLoading(true);
+        
+        if (currentCategory === "all products") {
+          const productsData = await getProducts();
+          setProducts(productsData || []);
+        } else {
+          // Get the slug from our mapping
+          const categorySlug = categoryMapping[currentCategory];
+          console.log("Fetching products for category slug:", categorySlug);
+          
+          const productsData = await getProducts({ category: categorySlug });
+          setProducts(productsData || []);
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading products:", err);
+        setError("Không thể tải dữ liệu sản phẩm. Vui lòng thử lại sau.");
+        setLoading(false);
+      }
+    };
+
+    // Only fetch if we've already loaded categories initially
+    if (categories.length > 0) {
+      fetchFilteredProducts();
+    }
+  }, [currentCategory, categoryMapping]);
+
+  if (error) {
+    return (
+      <section className="min-h-screen pt-12">
+        <div className="container mx-auto text-center">
+          <h2 className="section-title mb-8 xl:mb-16 text-center mx-auto">
+            Sản Phẩm
+          </h2>
+          <p className="text-red-500">{error}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="min-h-screen pt-12">
@@ -109,29 +104,46 @@ const Projects = () => {
           Sản Phẩm
         </h2>
         {/* Tabs */}
-        <Tabs defaultValue={category} className="mb-24 xl:mb-48">
+        <Tabs defaultValue={currentCategory} className="mb-24 xl:mb-48">
           {/* Danh mục trượt ngang trên mobile */}
           <div className="w-full overflow-x-auto scrollbar-hide">
             <TabsList className="flex flex-nowrap md:flex-wrap justify-start md:justify-center gap-4 mb-12 mx-auto md:border dark:border-none px-4">
-              {uniqueCategories.map((cat, index) => (
-                <TabsTrigger
-                  key={index}
-                  value={cat}
-                  onClick={() => setCategory(cat)}
-                  className="capitalize px-4 py-2 md:w-auto whitespace-nowrap"
-                >
-                  {cat}
-                </TabsTrigger>
-              ))}
+              {loading && categories.length === 0 ? (
+                <div className="text-center w-full py-4">Đang tải danh mục...</div>
+              ) : (
+                categories.map((cat, index) => (
+                  <TabsTrigger
+                    key={index}
+                    value={cat}
+                    onClick={() => setCurrentCategory(cat)}
+                    className="capitalize px-4 py-2 md:w-auto whitespace-nowrap"
+                  >
+                    {cat}
+                  </TabsTrigger>
+                ))
+              )}
             </TabsList>
           </div>
           {/* Tabs Content */}
           <div className="text-lg xl:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {filteredProjects.map((project, index) => (
-              <TabsContent key={index} value={category}>
-                <ProjectCard project={project} />
-              </TabsContent>
-            ))}
+            {loading ? (
+              <div className="col-span-3 text-center py-8">Đang tải sản phẩm...</div>
+            ) : products.length === 0 ? (
+              <div className="col-span-3 text-center py-8">Không có sản phẩm nào trong danh mục này</div>
+            ) : (
+              products.map((product, index) => (
+                <TabsContent key={index} value={currentCategory}>
+                  <ProjectCard project={{
+                    image: product.image,
+                    category: product.category?.name || "Không phân loại",
+                    name: product.name,
+                    description: truncateHTML(product.description, 150),
+                    slug: product.slug,
+                    price: product.min_discounted_price ? `${product.min_discounted_price.toLocaleString('vi-VN')} đ` : "Liên hệ",
+                  }} />
+                </TabsContent>
+              ))
+            )}
           </div>
         </Tabs>
       </div>
