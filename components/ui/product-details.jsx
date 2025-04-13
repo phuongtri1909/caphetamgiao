@@ -9,6 +9,8 @@ import {
   Thermometer,
 } from "lucide-react";
 
+import {formatTextWithLineBreaks} from "@/lib/utils";
+
 const ProductDetails = ({ product, className = "" }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -39,7 +41,12 @@ const ProductDetails = ({ product, className = "" }) => {
                 !expanded && isTextLong ? "line-clamp-5" : ""
               }`}
             >
-              {displayText}
+              {formatTextWithLineBreaks(displayText).map((text, index) => (
+                <span key={index}>
+                  {text.text}
+                  {!text.isLastLine && <br />}
+                </span>
+              ))}
             </p>
           </div>
         </div>

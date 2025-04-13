@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import ProjectCard from "@/components/ProjectCard";
 import { useCategories } from "@/hooks/useAPI";
 import { getProducts } from "@/services/productService";
-import { getCategories } from "@/services/categoryService";
+import { getCategories,getCategoryProducts } from "@/services/categoryService";
 import { truncateHTML } from "@/lib/utils";
 
 const Projects = () => {
@@ -63,11 +63,11 @@ const Projects = () => {
           setProducts(productsData || []);
         } else {
           // Get the slug from our mapping
-          const categorySlug = categoryMapping[currentCategory];
-          console.log("Fetching products for category slug:", categorySlug);
+          const categorySlug = categoryMapping[currentCategory];   
+          const response = await getCategoryProducts(categorySlug);
+          console.log("Category Products Response:", response.products);
           
-          const productsData = await getProducts({ category: categorySlug });
-          setProducts(productsData || []);
+          setProducts(response.products || []);
         }
         
         setLoading(false);
@@ -124,27 +124,35 @@ const Projects = () => {
               )}
             </TabsList>
           </div>
-          {/* Tabs Content */}
-          <div className="text-lg xl:mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {loading ? (
-              <div className="col-span-3 text-center py-8">Đang tải sản phẩm...</div>
-            ) : products.length === 0 ? (
-              <div className="col-span-3 text-center py-8">Không có sản phẩm nào trong danh mục này</div>
-            ) : (
-              products.map((product, index) => (
-                <TabsContent key={index} value={currentCategory}>
-                  <ProjectCard project={{
-                    image: product.image,
-                    category: product.category?.name || "Không phân loại",
-                    name: product.name,
-                    description: truncateHTML(product.description, 150),
-                    slug: product.slug,
-                    price: product.min_discounted_price ? `${product.min_discounted_price.toLocaleString('vi-VN')} đ` : "Liên hệ",
-                  }} />
-                </TabsContent>
-              ))
-            )}
-          </div>
+          
+          {/* Tabs Content - One content per category */}
+          {categories.map((category) => (
+            <TabsContent key={category} value={category} className="w-full">
+              <div className="text-lg grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {loading ? (
+                  <div className="col-span-3 text-center py-8">Đang tải sản phẩm...</div>
+                ) : products.length === 0 ? (
+                  <div className="col-span-3 text-center py-8">Không có sản phẩm nào trong danh mục này</div>
+                ) : (
+                  products.map((product, index) => (
+                    <ProjectCard 
+                      key={index}
+                      project={{
+                        image: product.image,
+                        category: product.category_name || "Không phân loại",
+                        name: product.name,
+                        description: truncateHTML(product.description, 150),
+                        slug: product.slug,
+                        price: product.min_discounted_price ? 
+                          `${product.min_discounted_price.toLocaleString('vi-VN')} đ` : 
+                          "Liên hệ",
+                      }} 
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
+          ))}
         </Tabs>
       </div>
     </section>

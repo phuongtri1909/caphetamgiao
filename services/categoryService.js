@@ -10,16 +10,6 @@ export const getCategories = async () => {
   }
 };
 
-export const getCategoryDetail = async (slug) => {
-  try {
-    const response = await api.get(`/categories/${slug}`);
-    return response.data.success ? response.data.data : null;
-  } catch (error) {
-    console.error(`Error fetching category ${slug}:`, error);
-    throw error;
-  }
-};
-
 export const getCategoryProducts = async (slug) => {
   try {
     const response = await api.get(`/categories/${slug}/products`);

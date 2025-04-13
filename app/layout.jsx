@@ -32,7 +32,7 @@ export const metadata = {
     siteName: "Tâm Giao Coffee",
     images: [
       {
-        url: "https://tamgiaocoffee.com/thumbnail.jpg",
+        url: "/thumbnail/thumbnail.jpg",
         width: 1200,
         height: 630,
         alt: "Tâm Giao Coffee",
@@ -45,7 +45,7 @@ export const metadata = {
     title: "Tâm Giao Coffee - Hương vị đậm đà, kết nối tâm hồn",
     description:
       "Thưởng thức cà phê nguyên chất từ Tâm Giao Coffee, nơi kết nối những tâm hồn yêu cà phê.",
-    images: ["https://tamgiaocoffee.com/thumbnail.jpg"],
+    images: ["/thumbnail/thumbnail.jpg"],
   },
 };
 
