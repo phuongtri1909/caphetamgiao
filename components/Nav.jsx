@@ -11,6 +11,7 @@ const links = [
   { path: "/", name: "Giới Thiệu" },
   { path: "/projects", name: "Sản Phẩm" },
   { path: "/nhuongquyen", name: "Nhượng Quyền" },
+  {path: "/news", name: "Tin Tức" },
   { path: "/lienhe", name: "Liên Hệ" },
 ];
 
