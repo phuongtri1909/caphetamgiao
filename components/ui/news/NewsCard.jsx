@@ -9,8 +9,6 @@ const NewsCard = ({ article }) => {
   const [imageError, setImageError] = useState(false);
   const fallbackImage = "/news-placeholder.jpg";
   
-  console.log(article.thumbnail);
-  
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -41,16 +39,10 @@ const NewsCard = ({ article }) => {
             <Calendar size={14} className="mr-1" />
             {formatVietnameseDate(article.published_at || article.created_at)}
           </span>
-          {article.read_time && (
-            <span className="flex items-center">
-              <Clock size={14} className="mr-1" />
-              {article.read_time} phút đọc
-            </span>
-          )}
         </div>
         
         <Link href={`/news/${article.slug}`} className="block">
-          <h3 className="font-semibold text-lg mb-2 line-clamp-2 hover:text-[#84AF5A] transition-colors">
+          <h3 className="font-semibold text-lg mb-2 line-clamp-2 hover:text-primary transition-colors">
             {article.title}
           </h3>
         </Link>
@@ -61,9 +53,9 @@ const NewsCard = ({ article }) => {
         
         <Link 
           href={`/news/${article.slug}`}
-          className="inline-flex items-center text-sm font-medium text-[#53382C] hover:text-[#84AF5A] transition-colors mt-auto"
+          className="inline-flex items-center text-sm font-medium text-[#53382C] hover:text-primary transition-colors mt-auto"
         >
-          Đọc tiếp
+          Đọc bài viết
           <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
           </svg>

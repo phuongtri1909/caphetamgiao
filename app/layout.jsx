@@ -10,6 +10,9 @@ import { Toaster } from 'react-hot-toast';
 
 const outfit = Outfit({ subsets: ["latin"] });
 
+// Base URL for absolute paths
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://tamgiaocoffee.com";
+
 export const metadata = {
   title: "Tâm Giao Coffee - Hương vị đậm đà, kết nối tâm hồn",
   icons: {
@@ -28,24 +31,35 @@ export const metadata = {
     title: "Tâm Giao Coffee - Hương vị đậm đà, kết nối tâm hồn",
     description:
       "Thưởng thức cà phê nguyên chất từ Tâm Giao Coffee, nơi kết nối những tâm hồn yêu cà phê.",
-    url: "https://tamgiaocoffee.com",
+    url: siteUrl,
     siteName: "Tâm Giao Coffee",
     images: [
       {
-        url: "/thumbnail/thumbnail.jpg",
+        url: `${siteUrl}/thumbnail/thumbnail.jpg`,
         width: 1200,
         height: 630,
         alt: "Tâm Giao Coffee",
       },
     ],
     type: "website",
+    locale: "vi_VN",
   },
   twitter: {
     card: "summary_large_image",
     title: "Tâm Giao Coffee - Hương vị đậm đà, kết nối tâm hồn",
     description:
       "Thưởng thức cà phê nguyên chất từ Tâm Giao Coffee, nơi kết nối những tâm hồn yêu cà phê.",
-    images: ["/thumbnail/thumbnail.jpg"],
+    images: [`${siteUrl}/thumbnail/thumbnail.jpg`],
+    creator: "@tamgiaocoffee",
+    site: "@tamgiaocoffee",
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  metadataBase: new URL(siteUrl),
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

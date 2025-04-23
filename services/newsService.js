@@ -1,5 +1,4 @@
-import api from '../utils/api';
-
+import api from "../utils/api";
 
 /**
  * Get all news articles with pagination
@@ -8,7 +7,7 @@ import api from '../utils/api';
  */
 export const getAllNews = async (page = 1) => {
   try {
-    const response = await api.get('/news', { params: { page } });
+    const response = await api.get("/news", { params: { page } });
     return response.data.success ? response.data.data : { data: [], meta: {} };
   } catch (error) {
     console.error("Error fetching news:", error);
@@ -23,7 +22,7 @@ export const getAllNews = async (page = 1) => {
  */
 export const getFeaturedNews = async (page = 1) => {
   try {
-    const response = await api.get('/news/featured', { params: { page } });
+    const response = await api.get("/news/featured", { params: { page } });
     return response.data.success ? response.data.data : { data: [], meta: {} };
   } catch (error) {
     console.error("Error fetching featured news:", error);
@@ -38,7 +37,7 @@ export const getFeaturedNews = async (page = 1) => {
  */
 export const getLatestNews = async (page = 1) => {
   try {
-    const response = await api.get('/news/latest', { params: { page } });
+    const response = await api.get("/news/latest", { params: { page } });
     return response.data.success ? response.data.data : { data: [], meta: {} };
   } catch (error) {
     console.error("Error fetching latest news:", error);
@@ -54,9 +53,11 @@ export const getLatestNews = async (page = 1) => {
  */
 export const searchNews = async (query, page = 1) => {
   try {
-    const response = await api.get('/news/search', { 
-      params: { query, page } 
+    // Change 'q' instead of using 'query' to match your backend API
+    const response = await api.get("/news/search", {
+      params: { q: query, page },
     });
+
     return response.data.success ? response.data.data : { data: [], meta: {} };
   } catch (error) {
     console.error("Error searching news:", error);
