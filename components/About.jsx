@@ -1,6 +1,10 @@
+"use client";
+import { useState, useEffect, useRef } from "react";
 import DevImg from "./DevImg";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCategories } from "@/services/categoryService";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import {
   User2,
@@ -113,6 +117,45 @@ const skillData = [
 ];
 
 const About = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef(null);
+  
+  // Fetch categories when component mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const categoriesData = await getCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching coffee categories:", error);
+        // Fallback data in case of error
+        setCategories([
+          { name: "Robusta" },
+          { name: "Arabica" },
+          { name: "Culi" },
+          { name: "Moka" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchCategories();
+  }, []);
+  
+  // Function to handle scrolling the categories container
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = direction === 'left' ? -150 : 150;
+      scrollContainerRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const getData = (arr, title) => {
     return arr.find((item) => item.title === title);
   };
@@ -175,11 +218,51 @@ const About = () => {
                         );
                       })}
                     </div>
-                    {/* languages */}
+                    
+                    {/* coffee categories */}
                     <div className="flex flex-col gap-y-2">
-                      <div className="text-primary">Loại Cà Phê</div>
+                      <div className="text-primary flex items-center justify-between">
+                        <div>Loại Cà Phê</div>
+                        {categories.length > 3 && (
+                          <div className="flex items-center gap-x-2">
+                            <button 
+                              onClick={() => scroll('left')}
+                              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                              aria-label="Cuộn sang trái"
+                            >
+                              <ChevronLeft size={16} />
+                            </button>
+                            <button 
+                              onClick={() => scroll('right')}
+                              className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                              aria-label="Cuộn sang phải"
+                            >
+                              <ChevronRight size={16} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                       <div className="border-b border-border"></div>
-                      <div>Robusta, Arabica, Culi</div>
+                      <div 
+                        className="flex gap-x-3 overflow-x-auto scrollbar-hide py-2" 
+                        ref={scrollContainerRef}
+                        style={{ scrollBehavior: 'smooth' }}
+                      >
+                        {loading ? (
+                          <div className="text-gray-500 italic">Đang tải loại cà phê...</div>
+                        ) : categories.length > 0 ? (
+                          categories.map((category, index) => (
+                            <div 
+                              key={index} 
+                              className="px-3 py-1 bg-primary/10 text-primary rounded-2xl whitespace-nowrap"
+                            >
+                              {category.name}
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-gray-500">Chưa có loại cà phê nào</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </TabsContent>
