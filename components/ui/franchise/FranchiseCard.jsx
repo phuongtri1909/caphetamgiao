@@ -122,11 +122,12 @@ const FranchiseCard = ({ franchise, variants }) => {
 
       {/* Contact Form Modal */}
       <ContactFormModal 
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)} 
-        franchiseName={franchise.name_package}
-        franchiseId={franchise.id}
-      />
+  isOpen={isDialogOpen}
+  onClose={() => setIsDialogOpen(false)} 
+  franchiseName={franchise.name_package}
+  franchiseId={franchise.id}
+  franchiseCode={franchise.code}
+/>
     </>
   );
 };

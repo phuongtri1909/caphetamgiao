@@ -28,7 +28,6 @@ const FranchiseDetailPage = () => {
       try {
         setLoading(true);
         const response = await getFranchiseDetail(slug);
-        console.log("Franchise data:", response);
 
         setFranchise(response.franchise);
         setOtherFranchises(response.other_franchises);
@@ -249,6 +248,7 @@ const FranchiseDetailPage = () => {
         onClose={() => setIsContactModalOpen(false)}
         franchiseName={franchise.name_package}
         franchiseId={franchise.id}
+        franchiseCode={franchise.code}
       />
     </>
   );

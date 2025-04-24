@@ -171,8 +171,8 @@ const ProductDetail = ({ params }) => {
 
   // Tạo danh sách ảnh cho gallery
   const galleryImages = product.images?.length
-  ? [product.image, ...product.images.map((img) => img.image_path)]
-  : [product.image];
+    ? [product.image, ...product.images.map((img) => img.image_path)]
+    : [product.image];
 
   const breadcrumbsItems = [
     { label: "Trang chủ", href: "/" },
@@ -329,12 +329,13 @@ const ProductDetail = ({ params }) => {
                     formatPrice={formatPrice}
                   />
 
-                  <button
+                  <Link
+                    href="/lienhe"
                     className="w-full sm:w-auto px-5 py-2 bg-[#53382C] text-white rounded-md inline-flex items-center justify-center gap-2 hover:bg-[#3d291e] transition-colors"
                     aria-label="Liên hệ"
                   >
                     <span className="font-medium">Liên hệ</span>
-                  </button>
+                  </Link>
                 </div>
               </div>
               <div>

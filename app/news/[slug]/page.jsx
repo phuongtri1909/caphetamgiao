@@ -291,36 +291,6 @@ const NewsDetail = () => {
           </div>
         </section>
       )}
-
-      {/* Newsletter signup */}
-      <section className="py-16 bg-primary/5">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto text-center"
-          >
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Đăng ký nhận tin
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Để lại email để nhận các bài viết mới nhất về cà phê và cập nhật từ Tâm Giao Coffee
-            </p>
-            <form className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-              <input 
-                type="email"
-                placeholder="Email của bạn"
-                className="flex-1 h-12 px-4 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <Button className="h-12 bg-primary hover:bg-primary/90 text-primary-foreground">
-                Đăng ký
-              </Button>
-            </form>
-          </motion.div>
-        </div>
-      </section>
     </motion.div>
   );
 };
