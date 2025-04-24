@@ -11,12 +11,20 @@ const links = [
   { path: "/", name: "Giới Thiệu" },
   { path: "/projects", name: "Sản Phẩm" },
   { path: "/nhuongquyen", name: "Nhượng Quyền" },
-  {path: "/news", name: "Tin Tức" },
+  { path: "/news", name: "Tin Tức" },
   { path: "/lienhe", name: "Liên Hệ" },
 ];
 
-const Nav = ({ containerStyles, linkStyles, underlineStyles }) => {
+const Nav = ({ containerStyles, linkStyles, underlineStyles, isMobile, onLinkClick }) => {
   const path = usePathname();
+  
+  const handleClick = () => {
+    // Only call onLinkClick if it exists and we're in mobile view
+    if (isMobile && onLinkClick) {
+      onLinkClick();
+    }
+  };
+  
   return (
     <nav className={`${containerStyles}`}>
       {links.map((link, index) => {
@@ -25,6 +33,7 @@ const Nav = ({ containerStyles, linkStyles, underlineStyles }) => {
             href={link.path}
             key={index}
             className={`capitalize ${linkStyles}`}
+            onClick={handleClick}
           >
             {link.path === path && (
               <motion.span
